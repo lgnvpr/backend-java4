@@ -11,10 +11,28 @@ import javax.servlet.http.HttpServletResponse;
 import luongnvpk.model.filter.IError;
 
 public class ErrorRequest {
-	String message = "";
-	int status;
+	static String message = "";
+	
+
+	static int status;
 	static ServletRequest request;
 	static ServletResponse response;
+	
+	public static String getMessage() {
+		return message;
+	}
+
+	public static void setMessage(String message) {
+		ErrorRequest.message = message;
+	}
+
+	public static int getStatus() {
+		return status;
+	}
+
+	public static void setStatus(int status) {
+		ErrorRequest.status = status;
+	}
 
 	public static ServletRequest getRequest() {
 		return request;
@@ -31,26 +49,28 @@ public class ErrorRequest {
 	public static void setResponse(ServletResponse response2) {
 		ErrorRequest.response = response2;
 	}
+	
+	public static void BadInput(String mesage) throws IOException {
+		ErrorRequest.ReturnError(mesage, 430);
+	}
+	
+	public static void Authen() throws IOException {
+		ErrorRequest.ReturnError("Authencation", 401);
+	}
 
 	public static void Error500(String message) throws IOException {
-//		request.setAttribute("javax.servlet.error.status_code", 401);
-		Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
-		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-		String servletName = (String) request.getAttribute("javax.servlet.error.servlet_name");
-		if (servletName == null) {
-			servletName = "Unknown";
-		}
-		String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-		if (requestUri == null) {
-			requestUri = "Unknown";
-		}
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		ErrorRequest.ReturnError(message, 500);
+	}
+	
+	public static void ReturnError(String message, int status ) throws IOException {
 		IError error = new IError();
-		error.setStatus(500);
 		error.setMessage(message);
-		response.getWriter().print(ObjectHelper.gson().toJson(error));
-		response.setContentType("application/json");
-		response.getWriter().close();
+		ErrorRequest.setMessage(message);
+		ErrorRequest.setStatus(status);
+		response.setCharacterEncoding("UTF-8");
+		((HttpServletResponse) response).setStatus(status);
+		response.getWriter().write(ObjectHelper.gson().toJson(error));
+		((HttpServletResponse) response).setHeader("Content-Type", "application/json");
 	}
 
 }

@@ -19,6 +19,7 @@ import com.fasterxml.uuid.Generators;
 import com.google.gson.Gson;
 
 import luongnvpk.helper.HibernateUtil;
+import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper._C;
 import luongnvpk.model.AccountStaff;
 import luongnvpk.model.BaseModel;
@@ -160,6 +161,7 @@ public class BaseRepository<T extends BaseModel> {
 	public T save(T t) {
 		Session session = this.getSession();
 		session.beginTransaction();
+		System.out.println(ObjectHelper.gson().toJson(t));
 		t= this.defaultValueSave(t);
 		if(t.getId()!= null && t.getId().toString().trim() != "") {
 			T checkExist = this.get(t.getId());

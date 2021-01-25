@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
@@ -40,19 +41,24 @@ public class Filter implements javax.servlet.Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		((HttpServletResponse) response).addHeader("Access-Control-Allow-Origin", "*");
+		((HttpServletResponse) response).addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+		((HttpServletResponse) response).addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+		((HttpServletResponse) response).addHeader("Access-Control-Max-Age", "1728000");
 		String paramsJson = ObjectHelper.getParamsJson(request);
 		ErrorRequest.setRequest(request);
 		ErrorRequest.setResponse(response);
+		ErrorRequest.setStatus(200);
 		Context<FindFilter> ctx = new Context<FindFilter>();
 		ctx.setParams(paramsJson);
 		request.setAttribute("ctx", ctx);
-		chain.doFilter(request, response);		
-//		 ((HttpServletResponse) response).addHeader("Access-Control-Allow-Origin", "*");
-//	        ((HttpServletResponse) response).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
-//	 
-		response.getWriter().print(gson.toJson(request.getAttribute("return")));
-		response.setContentType("application/json");
-		response.getWriter().close();
+		chain.doFilter(request, response);
+		if(!(ErrorRequest.getStatus()>300)) {
+			response.getWriter().print(gson.toJson(request.getAttribute("return")));
+			response.setContentType("application/json");
+			response.getWriter().close();
+		}
+		
 	}
 	@Override
 	public void destroy() {
