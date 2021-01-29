@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS detail_bill(
 	created_at DATETIME NOT NULL DEFAULT now(),
 	created_by varchar(225) NULL DEFAULT '' ,
 	updated_by varchar(225) NULL DEFAULT '',
+	is_deleted boolean default false,
 	bill_id varchar(225) not null,
 	product_id varchar(225) not null
 );

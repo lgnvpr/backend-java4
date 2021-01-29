@@ -1,0 +1,3 @@
+INSERT INTO category_product (id,updated_at,created_at,created_by,updated_by,is_deleted,name,desciption,image) VALUES
+	 ('649a13b6-8c7a-4b94-b33b-1e22a8eb45dd','2021-01-29 00:39:46','2021-01-29 00:39:46','','',0,'normal','no description ','https://vanluongg.github.io/vanluong/img/home/img-product/2.jpg'),
+	 ('649a13b6-8c7a-4b94-b33b-1e22a8eb45ddc','2021-01-29 00:40:16','2021-01-29 00:40:16','','',0,'normal1','no description ','https://vanluongg.github.io/vanluong/img/home/img-product/2.jpg')

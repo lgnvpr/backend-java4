@@ -12,7 +12,6 @@ import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
 import Config.Config;
 import luongnvpk.model.Account;
-import luongnvpk.model.AccountStaff;
 import luongnvpk.model.BaseModel;
 import luongnvpk.model.Product;
 

@@ -27,32 +27,25 @@ import luongnvpk.helper.HibernateUtil;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper._C;
 import luongnvpk.model.Account;
-import luongnvpk.model.AccountStaff;
 import luongnvpk.repository.AccountStaffRepository;
 import luongnvpk.repository.BaseRepository;
+import luongnvpk.repository.MainRepository;
 
-@WebServlet(name = "migration",urlPatterns = { "/migration"} ,loadOnStartup = 1)
-public class MigrationService extends BaseService<AccountStaff> {
-	
+@WebServlet(name = "migration", urlPatterns = { "/migration" }, loadOnStartup = 1)
+public class MigrationService extends BaseService {
+
 	@Override
 	public void init() throws ServletException {
 		System.out.println("migraiton is init");
 		migration migra = new migration();
-		
-			try {
-				migra.migraion();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e);
-			}
-		
+		migra.migraion();
+		MainRepository.init();
 		super.init();
-		
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+
 	}
 
 }

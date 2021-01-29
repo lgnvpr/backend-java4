@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS cart_product(
 	created_at DATETIME NOT NULL DEFAULT now(),
 	created_by varchar(225) NULL DEFAULT '' ,
 	updated_by varchar(225) NULL DEFAULT '',
+	is_deleted boolean default false,
 	product_id varchar(225) not null,
-	customer_id varchar(225) not null
+	customer_id varchar(225) not null,
+	amout int not null
 );

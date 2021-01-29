@@ -1,7 +1,15 @@
 package luongnvpk.model;
 
-public class DetailRole {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "role_permission")
+public class RolePermission {
+	@Column(name = "role_id")
 	String roleId ;
+	@Column(name = "permission")
 	String permission;
 	public String getRoleId() {
 		return roleId;

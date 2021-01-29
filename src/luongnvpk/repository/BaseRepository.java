@@ -1,5 +1,7 @@
 package luongnvpk.repository;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,23 +16,26 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.annotations.Table;
 import org.hibernate.id.GUIDGenerator;
+import org.hibernate.internal.build.AllowSysOut;
 
 import com.fasterxml.uuid.Generators;
 import com.google.gson.Gson;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import luongnvpk.helper.HibernateUtil;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper._C;
-import luongnvpk.model.AccountStaff;
 import luongnvpk.model.BaseModel;
 import luongnvpk.model.filter.FindFilter;
+import luongnvpk.model.filter.IMappingTable;
 import luongnvpk.model.filter.ListFilter;
 import luongnvpk.model.filter.Paging;
 
 public class BaseRepository<T extends BaseModel> {
 	Class Repoclass = null;
 	protected String name= "";
-	public static Session session; 
+	public Session session; 
+	protected ArrayList<IMappingTable> join;
 	
 	public Session getSession() {
 		if(session == null) {
@@ -38,6 +43,10 @@ public class BaseRepository<T extends BaseModel> {
 		}
 		return this.session;
 	}
+	public void closeSesion() {
+		HibernateUtil.settingDbHelper(this.Repoclass).close();
+	}
+	
 	
 	protected String querySearch(String search , String[] searchFiled) {
 		String querySearch = "1=1";
@@ -100,7 +109,9 @@ public class BaseRepository<T extends BaseModel> {
 		Query<T> query =  this.getSession().createNativeQuery(newSql, this.Repoclass);
 		query.setMaxResults(filter.getLimit());
 		query.setFirstResult(filter.getOffset());
-		return query.getResultList();
+		List<T> list = query.getResultList();
+		this.closeSesion();
+		return list;
 	}
 	
 	protected int executeCount(String sql, FindFilter filter ) {
@@ -125,21 +136,44 @@ public class BaseRepository<T extends BaseModel> {
 	}
 	
 	protected Paging<T>  executeList(String sql, ListFilter filter){
-		
-		List<T> list =  this.executeFind(sql, this.convertListPropsToFindProps(filter));
+		List<T> list =  null;
+		try {
+			list=  this.executeFind(sql, this.convertListPropsToFindProps(filter));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e);
+		};
 		int total = this.executeCount(sql, this.convertListPropsToFindProps(filter)); 
 		Paging<T> pagingList = new Paging<T>();
 		pagingList.setPage(filter.getPage());
 		pagingList.setPageSize(filter.getPageSize());
 		pagingList.setTotal(total);
 		pagingList.setTotalPages((int) Math.round(Math.ceil((double)total/(double)filter.getPageSize())));
-		pagingList.setRows(list);;
+		pagingList.setRows(list);
 		return pagingList;
 	}
 	
 	public Paging<T> list(ListFilter filter) {
 		String sql = "select * from "+this.name+" where is_deleted=0";
+		System.out.println(this.getValueByField(filter,"page"));;
 		return this.executeList(sql, filter);
+	}
+	
+	public Object  getValueByField(ListFilter filter, String field) {
+		 Field getField;
+		try {
+			getField = filter.getClass().getDeclaredField(field);
+			System.out.println(getField.getName());
+			 try {
+				 getField.setAccessible(true);
+				return getField.get(filter);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				System.out.println(e);
+				return null;
+			}
+		} catch (NoSuchFieldException e1) {
+			return null;
+		}	  
 	}
 	
 	public List<T> find(FindFilter filter) {		
@@ -211,8 +245,8 @@ public class BaseRepository<T extends BaseModel> {
 	
 	public List<T> get(String[] id) {
 		@SuppressWarnings({ "deprecation", "unchecked" })
-		Query<T> query = this.getSession().createNativeQuery("select * from "+this.name+" where is_deleted=0 and id = :id", Repoclass);
-		query.setParameter("id", id);
+		Query<T> query = this.getSession().createNativeQuery("select * from "+this.name+" where is_deleted=0 and id in (:id)", Repoclass);
+		query.setParameterList("id", id);
 		return query.getResultList();
 	}
 }

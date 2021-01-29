@@ -1,8 +1,14 @@
 package luongnvpk.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "role")
 public class Role extends BaseModel{
+	@Column(name = "name")
 	String name;
-	String typeRole;
 	
 	
 	public String getName() {
@@ -10,12 +16,6 @@ public class Role extends BaseModel{
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public String getTypeRole() {
-		return typeRole;
-	}
-	public void setTypeRole(String typeRole) {
-		this.typeRole = typeRole;
 	}
 	
 	

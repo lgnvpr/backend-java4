@@ -1,19 +1,27 @@
 package luongnvpk.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "bill")
 public class Bill extends BaseModel{
+	@Column(name = "cusomter_id")
 	String customerId;
-	String voucherId;
+	@Column(name = "product_id")
+	String productId;
 	public String getCustomerId() {
 		return customerId;
 	}
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
-	public String getVoucherId() {
-		return voucherId;
+	public String getProductId() {
+		return productId;
 	}
-	public void setVoucherId(String voucherId) {
-		this.voucherId = voucherId;
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 	
 	

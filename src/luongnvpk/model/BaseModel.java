@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+
+
 @MappedSuperclass
 public class BaseModel {
 	@Id
@@ -62,6 +64,8 @@ public class BaseModel {
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}	
+	
+	
 	
 	
 }

@@ -23,7 +23,6 @@ import com.sun.net.httpserver.HttpServer;
 import luongnvpk.helper.ErrorRequest;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper._C;
-import luongnvpk.model.AccountStaff;
 import luongnvpk.model.BaseModel;
 import luongnvpk.model.filter.FindFilter;
 import luongnvpk.model.filter.ListFilter;
@@ -36,6 +35,7 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 	protected Class Repoclass = null;
 
 	protected Paging<T> list(ListFilter filter) {
+		System.out.println(ObjectHelper.gson().toJson(filter));
 		return this.adapter.list(filter);
 	}
 
@@ -65,6 +65,9 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 	protected ListFilter getParamsListFilter(HttpServletRequest req) {
 		Context<ListFilter> ctx = (Context<ListFilter>) req.getAttribute("ctx");
 		ListFilter filter = ctx.getParams(ListFilter.class);
+		if(filter ==null) {
+			filter = new ListFilter();
+		}
 		filter.autoDefault();		
 		return filter;
 	}

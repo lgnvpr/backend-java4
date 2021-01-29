@@ -1,8 +1,17 @@
 package luongnvpk.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "permission")
 public class Permission extends BaseModel{
+	@Column(name = "table_name")
 	String tableName;
+	@Column(name = "action")
 	String action;
+	@Column(name = "method")
 	String method;
 	
 	

@@ -1,7 +1,15 @@
 package luongnvpk.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "detail_bill")
 public class DetailBill extends BaseModel{
+	@Column(name = "bill_id")
 	String billId;
+	@Column(name = "product_id")
 	String productId;
 	
 	

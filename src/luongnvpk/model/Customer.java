@@ -2,15 +2,31 @@ package luongnvpk.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "customer")
 public class Customer extends BaseModel{
+	@Column(name = "name")
 	String name;
+	@Column(name = "cmnd")
 	String CMND; 
-	String numberPhone;
+	@Column(name = "phone")
+	String phone;
+	@Column(name = "email")
 	String email; 
+	@Column(name = "birth_at")
 	Date birthAt; 
-	String sex;
+	@Column(name = "gender")
+	String gender;
+	@Column(name = "address")
 	String address;
+	@Column(name = "image")
 	String image;
+	
+
 	
 	
 	public String getName() {
@@ -25,11 +41,11 @@ public class Customer extends BaseModel{
 	public void setCMND(String cMND) {
 		CMND = cMND;
 	}
-	public String getNumberPhone() {
-		return numberPhone;
+	public String getPhone() {
+		return phone;
 	}
-	public void setNumberPhone(String numberPhone) {
-		this.numberPhone = numberPhone;
+	public void setPhone(String numberPhone) {
+		this.phone = numberPhone;
 	}
 	public String getEmail() {
 		return email;
@@ -43,11 +59,11 @@ public class Customer extends BaseModel{
 	public void setBirthAt(Date birthAt) {
 		this.birthAt = birthAt;
 	}
-	public String getSex() {
-		return sex;
+	public String getGender() {
+		return gender;
 	}
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setGender(String sex) {
+		this.gender = sex;
 	}
 	public String getAddress() {
 		return address;

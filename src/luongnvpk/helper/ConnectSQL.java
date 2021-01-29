@@ -72,7 +72,8 @@ public class ConnectSQL {
             Statement.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(ConnectSQL.class.getName()).log(Level.SEVERE, null, ex);
+        	System.out.println(ex);
+//            Logger.getLogger(ConnectSQL.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }

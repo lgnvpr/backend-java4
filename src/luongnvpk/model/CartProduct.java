@@ -1,8 +1,17 @@
 package luongnvpk.model;
 
-public class Cart extends BaseModel{
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "cart_product")
+public class CartProduct extends BaseModel{
+	@Column(name = "product_id")
 	String productId;
+	@Column(name = "customer_id")
 	String customerId; 
+	@Column(name = "amount")
 	int amount;
 	
 	

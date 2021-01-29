@@ -5,8 +5,9 @@ CREATE TABLE IF NOT EXISTS account(
 	created_at DATETIME NOT NULL DEFAULT now(),
 	created_by varchar(225) NULL DEFAULT '' ,
 	updated_by varchar(225) NULL DEFAULT '',
+	is_deleted boolean default false,
 	username varchar(225) not null,
 	password varchar(225) not null,
 	user_id varchar(225) not null,
-	type varchar(20) not null,
+	type varchar(20) not null
 );

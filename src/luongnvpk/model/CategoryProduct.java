@@ -1,8 +1,17 @@
 package luongnvpk.model;
 
-public class TypeProduct extends BaseModel{
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "category_product")
+public class CategoryProduct extends BaseModel{
+	@Column(name = "name")
 	String name; 
+	@Column(name = "desciption")
 	String description;
+	@Column(name = "image")
 	String image;
 	
 	public String getName() {

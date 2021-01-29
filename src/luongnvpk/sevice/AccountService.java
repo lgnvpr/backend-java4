@@ -7,18 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import luongnvpk.model.AccountStaff;
+import luongnvpk.model.Account;
 import luongnvpk.repository.AccountStaffRepository;
 import luongnvpk.repository.BaseRepository;
+import luongnvpk.repository.MainRepository;
 
 @WebServlet(name = "account", urlPatterns = { "/account", "/account/*" })
-public class AccountService extends BaseService<AccountStaff> {
-	private AccountStaffRepository adapter = new AccountStaffRepository();
+public class AccountService extends BaseService<Account> {
+	private AccountStaffRepository adapter = MainRepository.accountRepo;
 
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("on login");
-		Context<AccountStaff> ctx = (Context<AccountStaff>) req.getAttribute("ctx");
-		AccountStaff get = ctx.getParams(Repoclass);
+		Context<Account> ctx = (Context<Account>) req.getAttribute("ctx");
+		Account get = ctx.getParams(Repoclass);
 		System.out.println(get.getPassword());
 		return this.adapter.login(get.getUsername(), get.getPassword());
 	}
@@ -26,8 +27,8 @@ public class AccountService extends BaseService<AccountStaff> {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		super.adapter = (BaseRepository<AccountStaff>) new AccountStaffRepository();
-		super.Repoclass = AccountStaff.class;
+		super.adapter = (BaseRepository<Account>) MainRepository.accountRepo;
+		super.Repoclass = Account.class;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ public class ListFilter extends BaseFilter{
 	int page = 1;
 	int pageSize = 10;
 	String sort = "";
+	
 	public ListFilter(int page, int pageSize, String sort, String search, String searchFiled) {
 		super(
 			search,

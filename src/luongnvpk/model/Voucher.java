@@ -2,12 +2,24 @@ package luongnvpk.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "cart_product")
 public class Voucher extends BaseModel{
+	@Column(name = "code_voucher")
 	String codeVoucher;
+	@Column(name = "percent_sale")
 	String percentSale;
+	@Column(name = "total_sale")
 	String totalSale;
+	@Column(name = "end_at")
 	Date endAt;
+	@Column(name = "start_at")
 	Date startAt;
+	@Column(name = "total")
 	Date total;
 	public String getCodeVoucher() {
 		return codeVoucher;

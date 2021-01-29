@@ -16,25 +16,26 @@ import luongnvpk.helper.ErrorRequest;
 import luongnvpk.helper.HibernateUtil;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper.SendMail;
-import luongnvpk.model.AccountStaff;
+import luongnvpk.model.Account;
 import luongnvpk.model.BaseModel;
 import luongnvpk.model.filter.FindFilter;
 import luongnvpk.model.filter.ListFilter;
 import luongnvpk.model.filter.Paging;
 
-public class AccountStaffRepository extends BaseRepository<AccountStaff> {
+public class AccountStaffRepository extends BaseRepository<Account> {
 
 	public AccountStaffRepository() {
 		super();
-		super.Repoclass = AccountStaff.class;
-		super.name = "account_staff";
+		super.Repoclass = Account.class;
+		super.name = "account";
 	}
 
 	public String login(String name, String password) throws IOException {
-		Query<AccountStaff> query = this.getSession().createNativeQuery(
+		@SuppressWarnings({ "deprecation", "unchecked" })
+		Query<Account> query = this.getSession().createNativeQuery(
 				"select * from " + this.name + " where is_deleted=0 and username =:username and password = :password",
 				this.Repoclass);
-		query.setParameter("username", name);
+		Query<Account> setParameter = query.setParameter("username", name);
 		query.setParameter("password", password);
 		try {
 			String get = ObjectHelper.gson().toJson(query.getResultList().get(0));
@@ -48,8 +49,10 @@ public class AccountStaffRepository extends BaseRepository<AccountStaff> {
 		}
 	}
 	
-	public AccountStaff save(AccountStaff account) {
-		Query<AccountStaff> query = this.getSession().createNativeQuery(
+	@SuppressWarnings("deprecation")
+	public Account save(Account account) {
+		@SuppressWarnings({ "unchecked", "deprecation" })
+		Query<Account> query = this.getSession().createNativeQuery(
 				"select * from " + this.name + " where is_deleted=0 and username =:username",
 				this.Repoclass);
 		query.setParameter("username", account.getUsername());

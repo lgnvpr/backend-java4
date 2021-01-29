@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
 
-import luongnvpk.model.AccountStaff;
 
 public class ObjectHelper {
 	private static Gson gson = new Gson();

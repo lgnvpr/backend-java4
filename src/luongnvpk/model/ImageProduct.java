@@ -1,13 +1,22 @@
 package luongnvpk.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name = "image_product")
 public class ImageProduct  extends BaseModel{
-	String image;
+	@Column(name = "link")
+	String link;
+	@Column(name = "product_id")
 	String productId;
-	public String getImage() {
-		return image;
+	public String getLink() {
+		return link;
 	}
-	public void setImage(String image) {
-		this.image = image;
+	public void setLink(String image) {
+		this.link = image;
 	}
 	public String getProductId() {
 		return productId;

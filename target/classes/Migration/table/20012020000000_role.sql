@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS role(
 	created_at DATETIME NOT NULL DEFAULT now(),
 	created_by varchar(225) NULL DEFAULT '' ,
 	updated_by varchar(225) NULL DEFAULT '',
+	is_deleted boolean default false,
 	name varchar(225) not null
 );
