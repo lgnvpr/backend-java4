@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS product(
 	description text null,
 	category_product_id varchar(225) null,
 	price_sale BIGINT null default 0,
-	percent_sale int null default 0
+	percent_sale int null default 0,
+	image text null 
 );

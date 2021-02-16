@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "detail_bill")
+@Table(name = EService.detailBill)
 public class DetailBill extends BaseModel{
 	@Column(name = "bill_id")
 	String billId;

@@ -17,21 +17,18 @@ import luongnvpk.helper.HibernateUtil;
 import luongnvpk.model.Account;
 import luongnvpk.model.CategoryProduct;
 import luongnvpk.model.Product;
+import luongnvpk.model.Enum.EService;
 import luongnvpk.repository.AccountStaffRepository;
 import luongnvpk.repository.BaseRepository;
 import luongnvpk.repository.CategoryRepository;
 import luongnvpk.repository.ProductRepository;
 
-@WebServlet(
-		urlPatterns = {"/category_product","/category_product/*"},
-		name= "category_product"
-)
+@WebServlet(name = EService.categoryProduct, urlPatterns = { "/"+ EService.categoryProduct, "/"+EService.categoryProduct+"/*" })
 public class CategoryProductServlet extends BaseService<CategoryProduct>{
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		super.adapter = (BaseRepository<CategoryProduct>) new CategoryRepository();
-		super.Repoclass = Account.class;
 	}
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

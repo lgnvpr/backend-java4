@@ -32,7 +32,6 @@ import luongnvpk.repository.BaseRepository;
 public class BaseService<T extends BaseModel> extends HttpServlet {
 	protected BaseRepository<T> adapter = null;
 	protected Gson gson = new Gson();
-	protected Class Repoclass = null;
 
 	protected Paging<T> list(ListFilter filter) {
 		System.out.println(ObjectHelper.gson().toJson(filter));
@@ -123,7 +122,7 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		T obj = (T) ObjectHelper.getBodyReqest(this.Repoclass, req);
+		T obj = (T) ObjectHelper.getBodyReqest(this.adapter.Repoclass, req);
 		req.setAttribute("return", this.remove(obj.getId()));
 	}
 
@@ -133,7 +132,7 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 		if (route.equalsIgnoreCase("/")) {
 			Context<T> ctx = (Context<T>) req.getAttribute("ctx");
 			
-			T obj =  ctx.getParams(this.Repoclass);
+			T obj =  ctx.getParams(this.adapter.Repoclass);
 			req.setAttribute("return", this.save(obj));
 		}
 	}

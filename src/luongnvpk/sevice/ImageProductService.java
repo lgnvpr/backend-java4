@@ -9,12 +9,13 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import luongnvpk.model.Account;
 import luongnvpk.model.ImageProduct;
+import luongnvpk.model.Enum.EService;
 import luongnvpk.repository.AccountStaffRepository;
 import luongnvpk.repository.BaseRepository;
 import luongnvpk.repository.ImageProductRepository;
 import luongnvpk.repository.MainRepository;
 
-@WebServlet(name = "image_product", urlPatterns = { "/image_product", "/image_product/*" })
+@WebServlet(name = EService.imageProduct, urlPatterns = { "/"+ EService.imageProduct, "/"+EService.imageProduct+"/*" })
 public class ImageProductService extends BaseService<ImageProduct> {
 	private ImageProductRepository adapter = MainRepository.imageProductRepo;
 
@@ -23,7 +24,6 @@ public class ImageProductService extends BaseService<ImageProduct> {
 	public void init() throws ServletException {
 		super.init();
 		super.adapter = (BaseRepository<ImageProduct>) MainRepository.imageProductRepo;
-		super.Repoclass = ImageProduct.class;
 	}
 
 	@Override

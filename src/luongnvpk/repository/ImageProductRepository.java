@@ -21,6 +21,7 @@ import luongnvpk.model.BaseModel;
 import luongnvpk.model.CategoryProduct;
 import luongnvpk.model.ImageProduct;
 import luongnvpk.model.Product;
+import luongnvpk.model.Enum.EService;
 import luongnvpk.model.filter.FindFilter;
 import luongnvpk.model.filter.ListFilter;
 import luongnvpk.model.filter.Paging;
@@ -31,7 +32,7 @@ public class ImageProductRepository extends BaseRepository<ImageProduct> {
 		super();
 		System.out.println("on class category");
 		super.Repoclass = ImageProduct.class;
-		super.name = "image_product";
+		super.name = EService.imageProduct;
 	}
 	
 	

@@ -7,17 +7,19 @@ public class IMappingTable{
 	String type;
 	String column;
 	BaseRepository reposiory;
+	String columFill;
 	
 	
 	public IMappingTable() {
 		super();
 	}
 	
-	public IMappingTable(String type, String column, BaseRepository reposiory) {
+	public IMappingTable(String type, String column, String columFill, BaseRepository reposiory) {
 		super();
 		this.type = type;
 		this.column = column;
 		this.reposiory = reposiory;
+		this.columFill = columFill;
 	}
 	
 	public String getType() {
@@ -38,6 +40,15 @@ public class IMappingTable{
 	public void setReposiory(BaseRepository<BaseModel> reposiory) {
 		this.reposiory = reposiory;
 	}
+
+	public String getColumFill() {
+		return columFill;
+	}
+
+	public void setColumFill(String columFill) {
+		this.columFill = columFill;
+	}
+	
 	
 	
 }

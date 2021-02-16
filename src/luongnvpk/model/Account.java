@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "account")
+@Table(name = EService.account)
 public class Account extends BaseModel{
 	
 	@Column(name = "username", nullable = true)

@@ -1,9 +1,7 @@
 package luongnvpk.repository;
 
 import java.io.IOException;
-import java.util.List;
 
-import javax.transaction.Transaction;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -13,21 +11,18 @@ import com.google.gson.Gson;
 
 import luongnvpk.helper.AuthenHelper;
 import luongnvpk.helper.ErrorRequest;
-import luongnvpk.helper.HibernateUtil;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper.SendMail;
 import luongnvpk.model.Account;
-import luongnvpk.model.BaseModel;
-import luongnvpk.model.filter.FindFilter;
-import luongnvpk.model.filter.ListFilter;
-import luongnvpk.model.filter.Paging;
+import luongnvpk.model.Enum.EService;
+
 
 public class AccountStaffRepository extends BaseRepository<Account> {
 
 	public AccountStaffRepository() {
 		super();
 		super.Repoclass = Account.class;
-		super.name = "account";
+		super.name = EService.account;
 	}
 
 	public String login(String name, String password) throws IOException {
@@ -39,7 +34,6 @@ public class AccountStaffRepository extends BaseRepository<Account> {
 		query.setParameter("password", password);
 		try {
 			String get = ObjectHelper.gson().toJson(query.getResultList().get(0));
-			System.out.println(get);
 			String token = AuthenHelper.signJwt(get);
 			AuthenHelper.veryJWT(get, token);
 			return token;

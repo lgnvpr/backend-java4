@@ -1,6 +1,7 @@
 package luongnvpk.helper;
 
 import java.io.BufferedReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
+
+import luongnvpk.model.BaseModel;
 
 
 public class ObjectHelper {
@@ -65,6 +68,45 @@ public class ObjectHelper {
 			return mergeParams;
 		}
 		return _C.value(body, params);
+	}
+	
+	public static  Object setValueByField(Object t, String field, Object value) {
+		Field getField = null;
+		try {
+			getField = t.getClass().getDeclaredField(field);
+		} catch (NoSuchFieldException | SecurityException e1) {
+			try {
+				getField = t.getClass().getSuperclass().getDeclaredField(field);
+			} catch (NoSuchFieldException e) {
+				System.out.println(e);
+			} catch (SecurityException e) {
+				System.out.println(e);
+			}
+		}
+		try {
+			getField.setAccessible(true);
+			getField.set(t, value);
+			return getField.get(t);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public static  Object getValueByField(Object t, String field) {
+		Field getField;
+		try {
+			getField = t.getClass().getDeclaredField(field);
+			try {
+				getField.setAccessible(true);
+				return getField.get(t);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				System.out.println(e);
+				return null;
+			}
+		} catch (NoSuchFieldException e1) {
+			return null;
+		}
 	}
 	
 	public static Gson gson() {

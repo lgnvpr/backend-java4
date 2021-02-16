@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "permission")
+@Table(name = EService.permission)
 public class Permission extends BaseModel{
 	@Column(name = "table_name")
 	String tableName;

@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "category_product")
+@Table(name = EService.categoryProduct)
 public class CategoryProduct extends BaseModel{
 	@Column(name = "name")
 	String name; 

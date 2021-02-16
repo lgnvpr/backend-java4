@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "role_permission")
+@Table(name = EService.rolePermission)
 public class RolePermission {
 	@Column(name = "role_id")
 	String roleId ;

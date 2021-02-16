@@ -12,8 +12,10 @@ import javax.persistence.Transient;
 import javax.persistence.Access;
 import org.hibernate.annotations.NotFound;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "product")
+@Table(name = EService.product)
 public class Product extends  BaseModel{
 	@Column(name = "name")
 	String name;
@@ -27,9 +29,11 @@ public class Product extends  BaseModel{
 	BigInteger priceSale;
 	@Column(name = "percent_sale", nullable = false)
 	int percentSale;
+	String image;
+	
 	
 	@Transient
-	private CategoryProduct categoryProduct;
+	public CategoryProduct categoryProduct;
 	
 	public String getName() {
 		return name;
@@ -73,6 +77,13 @@ public class Product extends  BaseModel{
 	public void setCategoryProduct(CategoryProduct categoryProduct) {
 		this.categoryProduct = categoryProduct;
 	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
 	
 	
 	

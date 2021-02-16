@@ -4,9 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 
 @Entity
-@Table(name = "image_product")
+@Table(name = EService.imageProduct)
 public class ImageProduct  extends BaseModel{
 	@Column(name = "link")
 	String link;

@@ -1,6 +1,8 @@
 package luongnvpk.repository;
 
+import luongnvpk.helper.ObjectHelper;
 import luongnvpk.model.BaseModel;
+import luongnvpk.model.filter.ListFilter;
 
 public class MainRepository {
 	public static ProductRepository productRepo = null;
@@ -25,6 +27,8 @@ public class MainRepository {
 			imageProductRepo = new ImageProductRepository();
 			System.out.println("image product Repo is init");
 		}
+		
+		productRepo.initMapping();
 		
 	}
 	

@@ -8,19 +8,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import luongnvpk.model.Account;
+import luongnvpk.model.Enum.EService;
 import luongnvpk.repository.AccountStaffRepository;
 import luongnvpk.repository.BaseRepository;
 import luongnvpk.repository.MainRepository;
 
-@WebServlet(name = "account", urlPatterns = { "/account", "/account/*" })
+@WebServlet(name = EService.account, urlPatterns = { "/"+ EService.account, "/"+EService.account+"/*" })
 public class AccountService extends BaseService<Account> {
 	private AccountStaffRepository adapter = MainRepository.accountRepo;
 
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("on login");
 		Context<Account> ctx = (Context<Account>) req.getAttribute("ctx");
-		Account get = ctx.getParams(Repoclass);
-		System.out.println(get.getPassword());
+		Account get = ctx.getParams(this.adapter.Repoclass);
 		return this.adapter.login(get.getUsername(), get.getPassword());
 	}
 
@@ -28,7 +28,6 @@ public class AccountService extends BaseService<Account> {
 	public void init() throws ServletException {
 		super.init();
 		super.adapter = (BaseRepository<Account>) MainRepository.accountRepo;
-		super.Repoclass = Account.class;
 	}
 
 	@Override

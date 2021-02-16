@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import luongnvpk.model.Enum.EService;
+
 @Entity
-@Table(name = "cart_product")
+@Table(name = EService.cartProduct)
 public class CartProduct extends BaseModel{
 	@Column(name = "product_id")
 	String productId;
