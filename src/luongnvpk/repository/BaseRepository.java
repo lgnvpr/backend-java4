@@ -1,7 +1,9 @@
 package luongnvpk.repository;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -19,11 +21,14 @@ import org.hibernate.id.GUIDGenerator;
 import org.hibernate.internal.build.AllowSysOut;
 
 import com.fasterxml.uuid.Generators;
+import com.google.common.base.CaseFormat;
 
 import luongnvpk.helper.HibernateUtil;
 import luongnvpk.helper.ObjectHelper;
 import luongnvpk.helper._C;
 import luongnvpk.model.BaseModel;
+import luongnvpk.model.Enum.EMapping;
+import luongnvpk.model.filter.FilterProps;
 import luongnvpk.model.filter.FindFilter;
 import luongnvpk.model.filter.IMappingTable;
 import luongnvpk.model.filter.ListFilter;
@@ -53,7 +58,7 @@ public class BaseRepository<T extends BaseModel> {
 			length = searchFiled.length;
 		}
 		for (int i = 0; i < length; i++) {
-			String feild = searchFiled[i];
+			String feild = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchFiled[i]);
 			if (i == 0) {
 				querySearch = ("" + feild + " like '%" + search + "%'");
 			}
@@ -68,6 +73,40 @@ public class BaseRepository<T extends BaseModel> {
 
 	protected String queryFilter(Object query) {
 		return "";
+	}
+
+	protected String queryFilter(FilterProps[] filter) {
+		String querySearch = "1=1";
+		int length = 0;
+
+		if (filter != null) {
+			length = filter.length;
+		}
+		for (int i = 0; i < length; i++) {
+			String feild = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, filter[i].getFiled());
+			String[] value = filter[i].getValue();
+			if (!feild.isBlank() && value != null && value.length > 0) {
+				if (i == 0) {
+					querySearch = ("" + feild + " in (" + this.createQueryFilterValue(value) + ")");
+				} else if (i == filter.length - 1) {
+					querySearch += (" and " + feild + " in (" + this.createQueryFilterValue(value) + ")");
+				} else {
+					querySearch += (" and " + feild + " in (" + this.createQueryFilterValue(value) + ")");
+				}
+			}
+		}		return querySearch;
+	}
+
+	private String createQueryFilterValue(String[] value) {
+		String query = "";
+		for (int i = 0; i < value.length; i++) {
+			if (i == value.length - 1) {
+				query += "'" + value[i] + "'";
+			} else {
+				query += "'" + value[i] + "',";
+			}
+		}
+		return query;
 	}
 
 	protected String querySort(String[] sort) {
@@ -95,10 +134,12 @@ public class BaseRepository<T extends BaseModel> {
 
 	protected List<T> executeFind(String sql, FindFilter filter) {
 		String queryMain = "where (1=1)";
-		String querySearch = this.querySearch(filter.getSearch(), filter.getSearchFileds());
+		String querySearch = this.querySearch(filter.getSearch(), filter.getSearchFields());
 		String querySort = this.querySort(filter.getSorts());
-		queryMain += (" and (" + querySearch + ")");
+		String queryFilter = this.queryFilter(filter.getFilter());
+		queryMain += (" and (" + querySearch + ") and(" + queryFilter + ")");
 		String newSql = "select * from (" + sql + ") as querySQL " + queryMain + " " + querySort + " ";
+		System.out.println(newSql);
 		@SuppressWarnings("deprecation")
 		Query<T> query = this.getSession().createNativeQuery(newSql, this.Repoclass);
 		query.setMaxResults(filter.getLimit());
@@ -110,9 +151,9 @@ public class BaseRepository<T extends BaseModel> {
 
 	protected int executeCount(String sql, FindFilter filter) {
 		String queryMain = "where (1=1)";
-		String querySearch = this.querySearch(filter.getSearch(), filter.getSearchFileds());
-
-		queryMain += (" and (" + querySearch + ")");
+		String querySearch = this.querySearch(filter.getSearch(), filter.getSearchFields());
+		String queryFilter = this.queryFilter(filter.getFilter());
+		queryMain += (" and (" + querySearch + ") and(" + queryFilter + ")");
 		String newSql = "select count(*) from (" + sql + ") as querySQL " + queryMain + " ";
 		Query<T> query = this.getSession().createNativeQuery(newSql);
 		return Integer.valueOf(String.valueOf(query.getSingleResult()).toString().trim());
@@ -121,10 +162,11 @@ public class BaseRepository<T extends BaseModel> {
 	public FindFilter convertListPropsToFindProps(ListFilter filter) {
 		FindFilter findFiler = new FindFilter();
 		findFiler.setSearch(filter.getSearch());
-		findFiler.setSearchFiled(filter.getSearchFiled());
+		findFiler.setSearchFields(filter.getSearchFields());
 		findFiler.setSort(filter.getSort());
 		findFiler.setOffset((filter.getPage() - 1) * filter.getPageSize());
 		findFiler.setLimit(filter.getPageSize());
+		findFiler.setFilter(filter.getFilter());
 		return findFiler;
 	}
 
@@ -134,7 +176,6 @@ public class BaseRepository<T extends BaseModel> {
 			list = this.executeFind(sql, this.convertListPropsToFindProps(filter));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
 		}
 		;
 		int total = this.executeCount(sql, this.convertListPropsToFindProps(filter));
@@ -157,36 +198,72 @@ public class BaseRepository<T extends BaseModel> {
 	}
 
 	public void autoJoin(ArrayList<T> list) {
-		for (int i = 0; i < join.size(); i++) {
-			IMappingTable mapping = join.get(i);
-			String[] ids = list.stream().map(e -> {
-				return ObjectHelper.getValueByField(e, mapping.getColumn());
-			}).toArray(String[]::new);
-
-			System.out.println("----168----");
-			@SuppressWarnings("unchecked")
-			List<T> tableJoin = (List<T>) mapping.getReposiory().get(ids);
-			System.out.println(list.size());
-			for(int j =0 ; j <list.size()-1; j++ ) {
-				T item = list.get(j);
-				Object[] findItems = tableJoin.stream().filter(join -> {
-					if (join.getId().equalsIgnoreCase((String) ObjectHelper.getValueByField(item, mapping.getColumn()))) {
-						return true;
-					}
-					return false;
-				}).toArray(Object[]::new);
-				if(findItems.length>0) {
-					ObjectHelper.setValueByField(item, mapping.getColumFill(), findItems[0]);
-				}
-				System.out.println("---182");
-				list.set(j, item);
-				System.out.println(j);
-				System.out.println("---184");
-				System.out.println(ObjectHelper.gson().toJson(item));
+		for (int i = 0; i < this.join.size(); i++) {
+			IMappingTable mapping = this.join.get(i);
+			if(mapping.getType().equalsIgnoreCase(EMapping.oneToMany)) {
+				this.joinOneToMany(list, mapping);
 			}
-			System.out.println("-----186");
+			if(mapping.getType().equalsIgnoreCase(EMapping.manyToOne)) {
+				this.joinManyToOne(list, mapping);
+			}
 		}
-		System.out.println("-----189");
+	}
+
+	private void joinManyToOne(ArrayList<T> list, IMappingTable mapping) {
+		String[] ids = list.stream().map(e -> {
+			return ObjectHelper.getValueByField(e, mapping.getColumn());
+		}).filter(item -> {
+			if (item != null)
+				return true;
+			return false;
+		}).toArray(String[]::new);
+		@SuppressWarnings("unchecked")
+		List<T> tableJoin = (List<T>) mapping.getReposiory().get(ids);
+
+		for (int j = 0; j < list.size(); j++) {
+			T item = list.get(j);
+			Object[] findItems = null;
+			findItems = tableJoin.stream().filter(join -> {
+				if (join.getId().equalsIgnoreCase((String) ObjectHelper.getValueByField(item, mapping.getColumn()))) {
+					return true;
+				}
+				return false;
+			}).toArray(Object[]::new);
+			if (findItems != null && findItems.length > 0) {
+				ObjectHelper.setValueByField(item, mapping.getColumFill(), findItems[0]);
+
+			}
+			list.set(j, item);
+		}
+	}
+
+	private void joinOneToMany(ArrayList<T> list, IMappingTable mapping) {
+		String[] ids = list.stream().map(e -> {
+			return ObjectHelper.getValueByField(e, "id");
+		}).filter(item -> {
+			if (item != null)
+				return true;
+			return false;
+		}).toArray(String[]::new);
+		@SuppressWarnings("unchecked")
+		List<T> tableJoin = null;
+		FindFilter findFilterJoin = new FindFilter();
+		FilterProps filterJoin = new FilterProps(mapping.getColumn(), ids);		
+		tableJoin = (List<T>) mapping.getReposiory().find(findFilterJoin);
+		for (int j = 0; j < list.size(); j++) {
+			T item = list.get(j);
+			Object[] findItems = null;
+			findItems = tableJoin.stream().filter(join -> {
+				if (item.getId().equalsIgnoreCase((String) ObjectHelper.getValueByField(join, mapping.getColumn()))) {
+					return true;
+				}
+				return false;
+			}).toArray(Object[]::new);
+			if (findItems != null && findItems.length > 0) {
+				ObjectHelper.setValueByFields(item, mapping.getColumFill(), findItems);
+			}
+			list.set(j, item);
+		}
 	}
 
 	public List<T> find(FindFilter filter) {
@@ -208,7 +285,6 @@ public class BaseRepository<T extends BaseModel> {
 	public T save(T t) {
 		Session session = this.getSession();
 		session.beginTransaction();
-		System.out.println(ObjectHelper.gson().toJson(t));
 		t = this.defaultValueSave(t);
 		if (t.getId() != null && t.getId().toString().trim() != "") {
 			T checkExist = this.get(t.getId());
@@ -233,10 +309,8 @@ public class BaseRepository<T extends BaseModel> {
 		if (id != null && id.toString().trim() != "") {
 			T checkExist = this.get(id);
 			if (checkExist != null) {
-				System.out.println(checkExist.getId());
 				checkExist.setIsDeleted(true);
 				session.save(checkExist);
-				session.evict(checkExist);
 				session.getTransaction().commit();
 				return checkExist;
 			}
@@ -262,6 +336,8 @@ public class BaseRepository<T extends BaseModel> {
 		Query<T> query = this.getSession()
 				.createNativeQuery("select * from " + this.name + " where is_deleted=0 and id in (:id)", Repoclass);
 		query.setParameterList("id", id);
-		return query.getResultList();
+		List<T> result = query.getResultList();
+//		this.autoJoin((ArrayList<T>) result);
+		return result;
 	}
 }

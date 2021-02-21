@@ -15,6 +15,7 @@ public class ProductRepository extends BaseRepository<Product> {
 		super.join = new ArrayList<IMappingTable>();
 	}
 	public void initMapping() {
-		this.join.add(new IMappingTable(EMapping.manyToOne, "categoryProductId", "categoryProduct",(BaseRepository) MainRepository.categoryRepo));		
+		this.join.add(new IMappingTable(EMapping.manyToOne, "categoryProductId", "categoryProduct",(BaseRepository) MainRepository.categoryRepo));
+		this.join.add(new IMappingTable(EMapping.oneToMany, "productId", "productImage",(BaseRepository) MainRepository.imageProductRepo));
 	}
 }

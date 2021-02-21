@@ -10,13 +10,12 @@ public class FindFilter extends BaseFilter{
 	
 	
 	public FindFilter() {
-		super("", "");
-		this.limit = 1000;
-		this.offset = 0;
+		super();
+		this.autoDefault();
 	}
 	
 	
-	public FindFilter(String search, String searchFiled, int limit, int offset) {
+	public FindFilter(String search, String searchFiled[], int limit, int offset) {
 		super(search, searchFiled);
 		this.limit = limit;
 		this.offset = offset;
@@ -26,7 +25,7 @@ public class FindFilter extends BaseFilter{
 		this.setLimit(_C.value(this.getLimit(), 1000));
 		this.setOffset( _C.value(this.getOffset(), 0));
 		this.setSearch( _C.value(this.getSearch(), ""));
-		this.setSearchFiled( _C.value(this.getSearchFiled(), ""));
+		this.setSearchFields(this.getSearchFields());
 		this.setSort(_C.value(this.getSort(), ""));
 	}
 	
@@ -49,7 +48,7 @@ public class FindFilter extends BaseFilter{
 		this.sort = sort;
 	}
 	public String[] getSorts() {
-		if(this.getSearchFiled()==null) {
+		if(this.getSort()==null) {
 			this.sort = "";
 		}
 		return this.getSort().isEmpty() ? null  : this.getSort().split(",");

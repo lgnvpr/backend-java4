@@ -64,6 +64,7 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 	protected ListFilter getParamsListFilter(HttpServletRequest req) {
 		Context<ListFilter> ctx = (Context<ListFilter>) req.getAttribute("ctx");
 		ListFilter filter = ctx.getParams(ListFilter.class);
+		System.out.println(ObjectHelper.gson().toJson(filter));
 		if(filter ==null) {
 			filter = new ListFilter();
 		}
@@ -122,19 +123,30 @@ public class BaseService<T extends BaseModel> extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		T obj = (T) ObjectHelper.getBodyReqest(this.adapter.Repoclass, req);
+		Context<T> ctx = (Context<T>) req.getAttribute("ctx");
+		T obj =  ctx.getParams(this.adapter.Repoclass);
 		req.setAttribute("return", this.remove(obj.getId()));
+	}
+	
+	protected void routePost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println(this.getInfoRequest(req));
+		resp.setContentType("text");
+		String route = this.getRoute(req);
+		System.out.println("route" + route);
+		if (route.equalsIgnoreCase("/")) {
+			Context<T> ctx = (Context<T>) req.getAttribute("ctx");
+			T obj =  ctx.getParams(this.adapter.Repoclass);
+			req.setAttribute("return", this.save(obj));
+		}
+		if (route.equalsIgnoreCase("/list")) {
+			req.setAttribute("return", this.list(this.getParamsListFilter(req)));
+		}
+
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException, ServletException {
-		String route = this.getRoute(req);
-		if (route.equalsIgnoreCase("/")) {
-			Context<T> ctx = (Context<T>) req.getAttribute("ctx");
-			
-			T obj =  ctx.getParams(this.adapter.Repoclass);
-			req.setAttribute("return", this.save(obj));
-		}
+		this.routePost(req, resp);
 	}
 	
 	

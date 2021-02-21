@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS cart_product(
 	is_deleted boolean default false,
 	product_id varchar(225) not null,
 	customer_id varchar(225) not null,
-	amout int not null
+	amount int not null default 1
 );

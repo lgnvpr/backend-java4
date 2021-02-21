@@ -1,15 +1,17 @@
 package luongnvpk.model.filter;
 
+import luongnvpk.helper.ObjectHelper;
+
 public class FilterProps {
 	String filed;
-	Object value;
+	String[] value;
 	
 	
 	
 	public FilterProps() {
 		super();
 	}
-	public FilterProps(String filed, String value) {
+	public FilterProps(String filed, String value[]) {
 		super();
 		this.filed = filed;
 		this.value = value;
@@ -20,10 +22,10 @@ public class FilterProps {
 	public void setFiled(String filed) {
 		this.filed = filed;
 	}
-	public Object getValue() {
+	public String[] getValue() {
 		return value;
 	}
-	public void setValue(Object value) {
+	public void setValue(String[] value) {
 		this.value = value;
 	}
 	

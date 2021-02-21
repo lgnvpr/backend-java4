@@ -3,6 +3,7 @@ package luongnvpk.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import luongnvpk.model.Enum.EService;
 
@@ -16,7 +17,16 @@ public class CartProduct extends BaseModel{
 	@Column(name = "amount")
 	int amount;
 	
+	@Transient
+	Product product;
 	
+	
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 	public String getProductId() {
 		return productId;
 	}
